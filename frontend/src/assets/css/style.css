@@ -1,0 +1,11 @@
+@import "flowbite/src/themes/default";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  input:-webkit-autofill {
+    @apply text-white; /* tailwind 적용 가능 */
+    box-shadow: 0 0 0 1000px #1e1e1e inset;
+  }
+}
