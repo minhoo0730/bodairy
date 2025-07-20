@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\OtpCode;
 
 class AuthController extends Controller
 {
@@ -58,6 +59,16 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $verifiedOtp = OtpCode::where('email', $request->email)
+            ->where('verified', true)
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        if (!$verifiedOtp) {
+            return response()->json(['message' => 'OTP 인증이 완료되지 않았습니다.'], 403);
         }
 
         $user = User::where('email', $request->email)->first();

@@ -1,6 +1,7 @@
 
 <template>
   <RouterView></RouterView>
+  <ToastContainer />
 </template>
 
 <script setup>
