@@ -12,9 +12,9 @@ export const nameRequiredRule = [v => !!v || '이름은 필수입니다.'];
 
 export const passwordRule = [
   v => !!v || '패스워드는 필수 입력사항입니다.',
-  v =>
-    (v && v.length >= 8 && v.length <= 30) ||
-    '패스워드는 9~30자 이내로 입력해야 합니다.',
+  // v =>
+  //   (v && v.length >= 8 && v.length <= 30) ||
+  //   '패스워드는 8~30자 이내로 입력해야 합니다.',
   // v =>
   //   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@!%*#?&])[A-Za-z\d$@!%*#?&]{9,30}$/.test(
   //     v,

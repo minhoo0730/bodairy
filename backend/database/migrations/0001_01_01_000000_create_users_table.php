@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            // status 필드 추가
+            $table->enum('status', ['active', 'pending', 'dormant', 'deleted'])->default('active');
+
             $table->rememberToken();
             $table->timestamps();
         });

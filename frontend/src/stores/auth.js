@@ -25,11 +25,6 @@ export const useAuthStore = defineStore('auth', () => {
       await router.push('/home');
       show('로그인 성공!', 'success')
     } catch (error) {
-      // if (error.status === 401) {
-      //   show('아이디 또는 비밀번호가 올바르지 않습니다.', 'error');
-      // } else {
-      //   show('로그인 중 알 수 없는 오류가 발생했습니다.', 'error');
-      // }
       throw error;
     }
   };

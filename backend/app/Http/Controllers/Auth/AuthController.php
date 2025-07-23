@@ -17,10 +17,36 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
+        // 1. 로그인 실패
         if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json([
+                'message' => '아이디 또는 비밀번호가 올바르지 않습니다.'
+            ], 401);
         }
 
+        $user = auth()->user();
+        // 2. 탈퇴 회원 확인
+        if ($user->status === 'deleted') {
+            return response()->json([
+                'message' => '탈퇴한 계정입니다.'
+            ], 403);
+        }
+
+        // 3. 휴면 계정
+        if ($user->status === 'dormant') {
+            return response()->json([
+                'message' => '휴면 계정입니다. 이메일 인증 후 로그인할 수 있습니다.'
+            ], 403);
+        }
+
+        // 4. 승인 대기 (optional)
+        if ($user->status === 'pending') {
+            return response()->json([
+                'message' => '승인 대기 중인 계정입니다.'
+            ], 403);
+        }
+
+        // 5. 로그인 성공
         return response()->json([
             'message' => 'Login successful',
             'token' => $token,

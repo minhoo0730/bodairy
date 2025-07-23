@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     open: true, // 서버 실행 시 기본 브라우저에서 자동으로 열림
     port: 8000,
-    host: '0.0.0.0',  
+    host: '172.18.231.82',  
     strictPort: true, 
     cors: true
   },

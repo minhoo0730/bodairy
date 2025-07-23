@@ -2,27 +2,26 @@
   <div>
   <div class="relative">
     <input
+      placeholder=" "
+      class="input-base peer"
+      :class="inputClass"
       :type="props.type"
       :id="props.id"
-      placeholder=" "
       :value="props.modelValue"
       :autocomplete="props.autocomplete ?? (props.type === 'password' ? 'current-password' : 'on')"
-
       @focus="onFocus"
       @blur="onBlur"
-      @input="$emit('update:modelValue', $event.target.value)"
-      class="input-base peer"
-      :class="[hasError &&  formFocus ? 'error-input-base':'', validate.valid ? 'success-input-base':'']"
+      @input="onInput"
       />
     <label
       :for="props.id"
-      :class="[hasError &&  formFocus ? 'error-label-base':'', validate.valid ? 'success-label-base':'']"
+      :class="labelClass"
       class="label-base"
       >
       {{ props.label }}
     </label>
   </div>
-  <p @blur="!validate" class="mt-2 text-xs  dark:mt-2 text-xs text-red-600 dark:text-red-400" v-if="hasError">{{ inputError }}</p>
+  <p @blur="!validate" class="mt-2 text-xs  dark:mt-2 text-xs text-red-600 dark:text-red-400" v-if="hasError">{{ errorMessage }}</p>
 </div>
 </template>
 
@@ -49,29 +48,55 @@
     arrayRule:{
       type:Array,
       default: () => [],
+    },
+    backendError:{
+      type:Boolean,
+      default:false,
     }
   })
+
+const emit = defineEmits(['update:modelValue', 'resetBackendError']);
 
 const formFocus = ref(false);
 const inputError = ref('');
 
-const hasError = computed(() => formFocus.value && inputError.value !== '');
-const validate = computed(() => {
-  return checkRule(props.arrayRule, props.modelValue);
+const validate = computed(() => checkRule(props.arrayRule, props.modelValue));
+const hasError = computed(() => {
+  return formFocus.value && (!validate.value.valid);
+});
+const errorMessage = computed(() => {
+  if (props.backendError) return null;
+  return validate.value.message;
 });
 
 const onFocus = () => {
   if (!formFocus.value) formFocus.value = true;
 };
 
-const onBlur = () => {
-  if (formFocus.value) updateError();
-}
+const labelClass = computed(() => {
+  if (props.backendError) return 'error-label-base';
+  if (validate.value.valid) return 'success-label-base';
+  return '';
+});
+
+const inputClass = computed(() => {
+  if (props.backendError) return 'error-input-base';
+  if (validate.value.valid) return 'success-input-base';
+  return '';
+});
 
 const updateError = () => {
   const { valid, message } = checkRule(props.arrayRule, props.modelValue);
   inputError.value = valid ? '' : message;
 };
+
+const onBlur = () => {
+  if (formFocus.value) updateError();
+}
+const onInput = (e) => {
+  emit('update:modelValue', e.target.value)
+  emit('resetBackendError');
+}
 
 
 </script>

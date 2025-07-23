@@ -28,13 +28,12 @@ axiosInstance.interceptors.response.use(
   response => response,
   error => {
     const { show } = useToast()
-    const status = error?.response?.status
-    if (error.response && status === 401) {
-      show('아이디 또는 비밀번호가 올바르지 않습니다.', 'error')
-    } else if (error.response && status === 403) {
-      show('접근 권한이 없습니다.', 'error')
+//    const status = error?.response?.status;
+    const response = error.response;
+    if (response?.status === 401 || response?.status === 403) {
+        show(response.data.message, 'error')
     } else {
-    return Promise.reject(error);
+        return Promise.reject(error);
     }
   },
 );

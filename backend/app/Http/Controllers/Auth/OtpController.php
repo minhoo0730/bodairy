@@ -60,6 +60,10 @@ class OtpController extends Controller
             return response()->json(['message' => '유효하지 않거나 만료된 인증번호입니다.'], 422);
         }
 
+        if (!$otpRecord instanceof OtpCode) {
+            return response()->json(['message' => '인증정보 처리 중 오류가 발생했습니다.'], 500);
+        }
+
         // 인증 성공 시 verified = true
         $otpRecord->verified = true;
         $otpRecord->save();

@@ -12,12 +12,20 @@
   }
 }
 
+.button-base{
+  @apply text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 
+}
+
+.button-disabled-base{
+  @apply bg-blue-400 dark:bg-blue-500 cursor-not-allowed
+}
+
 .input-base {
   @apply block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600
 }
 
 .error-input-base{
-  @apply block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border  dark:text-red-400 dark:border-red-600
+  @apply block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border  dark:text-white dark:border-red-600
 }
 
 .success-input-base{
