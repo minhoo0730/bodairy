@@ -6,9 +6,11 @@
       class="input-base peer"
       :class="inputClass"
       :type="props.type"
+      :maxlength="props.maxlength"
       :id="props.id"
       :value="props.modelValue"
       :autocomplete="props.autocomplete ?? (props.type === 'password' ? 'current-password' : 'on')"
+      :inputmode="props.inputmode"
       @focus="onFocus"
       @blur="onBlur"
       @input="onInput"
@@ -21,7 +23,7 @@
       {{ props.label }}
     </label>
   </div>
-  <p @blur="!validate" class="mt-2 text-xs  dark:mt-2 text-xs text-red-600 dark:text-red-400" v-if="hasError">{{ errorMessage }}</p>
+  <p @blur="!validate" class="mt-2  dark:mt-2 text-red-600 dark:text-red-400" v-if="hasError">{{ errorMessage }}</p>
 </div>
 </template>
 
@@ -52,6 +54,18 @@
     backendError:{
       type:Boolean,
       default:false,
+    },
+    maxlength:{
+      type:Number,
+      default:null,
+    },
+    pattern:{
+      type:String,
+      default:null
+    },
+    inputmode:{
+      type:String,
+      default:null
     }
   })
 
@@ -94,10 +108,12 @@ const onBlur = () => {
   if (formFocus.value) updateError();
 }
 const onInput = (e) => {
-  emit('update:modelValue', e.target.value)
+  if(props.inputmode === 'numeric'){
+     e.target.value =  e.target.value.replace(/[^0-9]/g, '')
+  }
+  emit('update:modelValue',  e.target.value)
   emit('resetBackendError');
 }
-
 
 </script>
 

@@ -2,6 +2,7 @@ import axios from 'axios';
 // import Cookies from 'js-cookie';
 // import { useAuthStore } from '../stores/auth';
 import { toasts, useToast } from '@/composables/useToast';
+import { list } from 'postcss';
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
@@ -27,15 +28,24 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   response => response,
   error => {
-    const { show } = useToast()
-//    const status = error?.response?.status;
+    const { show } = useToast();
     const response = error.response;
-    if (response?.status === 401 || response?.status === 403) {
-        show(response.data.message, 'error')
-    } else {
-        return Promise.reject(error);
-    }
-  },
-);
 
+    if ([401, 403, 404, 422].includes(response?.status)) {
+      const errors = response?.data?.errors;
+
+      if (errors && typeof errors === 'object') {
+        Object.values(errors).forEach((messages) => {
+          if (Array.isArray(messages)) {
+            messages.forEach((msg) => show(msg, 'error'));
+          }
+        });
+      } else {
+        show(response?.data?.message || '에러가 발생했습니다.', 'error');
+      }
+    }
+
+    return Promise.reject(error); // 항상 Promise.reject 반환
+  }
+);
 export default axiosInstance;

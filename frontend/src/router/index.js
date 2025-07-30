@@ -26,6 +26,16 @@ const routes = [
         name: "resetPassword",
         component: () => import("@/pages/auth/ResetPasswordPage.vue"),
       },
+      {
+        path: "find-email",
+        name: "findEmail",
+        component: () => import("@/pages/auth/FindEmailPage.vue"),
+      },
+      {
+        path: "register",
+        name: "register",
+        component: () => import("@/pages/auth/RegisterPage.vue"),
+      },
     ],
   },
   {

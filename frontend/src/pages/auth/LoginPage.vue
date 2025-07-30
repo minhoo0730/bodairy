@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full h-screen flex flex-col justify-center items-center gap-4">
-    <form @submit.prevent class="w-full flex flex-col justify-center items-center gap-4">
+  <div class="w-full h-screen flex flex-col justify-center items-center gap-8">
+    <form class="w-full flex flex-col justify-center items-center gap-6"  @submit.prevent @keyup.enter="onSubmits">
       <BaseInput
         class="w-full"
         label="이메일"
@@ -18,9 +18,13 @@
         :backendError="backendError"
         id="password" />
     </form>
-    <div class="w-full flex flex-col gap-3">
+    <div class="w-full flex flex-col gap-4">
       <BaseButton label="로그인" @click.prevent="onSubmit" :disabled="!checkLoginValidation" :class="{'button-disabled-base' : !checkLoginValidation}"></BaseButton>
-      <BaseButton label="비밀번호 재설정" @click.prevent="resetPassword"></BaseButton>
+      <div class="flex justify-center link-pipe">
+        <BaseLinkButton to="/auth/find-email">이메일 찾기</BaseLinkButton>
+        <BaseLinkButton to="/auth/reset-password">비밀번호 재설정</BaseLinkButton>
+        <BaseLinkButton to="/auth/register">회원가입</BaseLinkButton>
+      </div>
     </div>
   </div>
 </template>
@@ -32,8 +36,8 @@
   import {emailRequiredRule, passwordRule, checkRule } from '@/composables/validationRules';
   import BaseInput from '@/components/BaseInput.vue';
   import BaseButton from '@/components/BaseButton.vue';
+  import BaseLinkButton from '@/components/BaseLinkButton.vue';
 
-  const router = useRouter();
   const auth = useAuthStore();
   const form = ref({
     email:'',
@@ -49,10 +53,6 @@
       backendError.value = true;
       return error;
     }
-  }
-
-  const resetPassword = () => {
-    router.push('/auth/reset-password')
   }
 
   const checkLoginValidation = computed(() => {

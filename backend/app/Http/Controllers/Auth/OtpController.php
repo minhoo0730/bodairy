@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -21,13 +22,20 @@ class OtpController extends Controller
         $otp = rand(100000, 999999); // 6자리 숫자
         $expiresAt = Carbon::now()->addMinutes(10);
 
+        // 이메일 존재 여부 확인
+        $checkEmail = User::where('email', $request->email)->first();
+        if (!$checkEmail) {
+            return response()->json([
+                'message' => '등록되지 않은 이메일입니다.'
+            ], 404);
+        }
+
         // DB 저장
         OtpCode::create([
             'email' => $request->email,
             'otp_code' => $otp,
             'expires_at' => $expiresAt,
         ]);
-
         // 메일 발송 (Mail 설정 필요)
         Mail::raw("Your OTP code is: $otp", function ($message) use ($request) {
             $message->to($request->email)
@@ -35,7 +43,7 @@ class OtpController extends Controller
         });
 
         return response()->json([
-            'message' => 'OTP sent successfully.'
+            'message' => '입력하신 이메일로 OTP번호가 발송되었습니다.'
         ]);
     }
 

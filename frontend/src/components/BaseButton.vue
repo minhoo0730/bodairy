@@ -18,6 +18,14 @@
 
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="postcss" scoped>
+  .sm{
+    @apply h-8 px-3;
+  }
+  .md{
+    @apply h-10 px-4;
+  }
+  .lg{  
+    @apply h-12 px-5;
+  }
 </style>

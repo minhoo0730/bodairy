@@ -80,7 +80,14 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:30',
+                'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@!%*#?&])[A-Za-z\d$@!%*#?&]{8,30}$/',
+                'confirmed', // confirm 필드와 자동 비교
+            ],
         ]);
 
         if ($validator->fails()) {
