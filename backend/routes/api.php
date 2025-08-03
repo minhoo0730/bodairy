@@ -11,6 +11,9 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// 로그아웃
+Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
+
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 // OTP 발급 및 인증

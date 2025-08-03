@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full h-screen flex flex-col justify-center items-center gap-4">
-    <form @submit.prevent class="w-full flex flex-col justify-center items-center gap-4">
+  <div class="w-full h-screen flex flex-col justify-center items-center gap-8">
+    <form @submit.prevent class="w-full flex flex-col justify-center items-center gap-6">
       <div class="w-full flex flex-col gap-3">
         <div class="w-full flex gap-3">
           <BaseInput 
@@ -11,7 +11,7 @@
             :backendError="emailCheckError"
             :arrayRule="emailRequiredRule"
             id="email" />
-          <BaseButton class="w-4/12 xl" id="getOtpBtn" label="인증번호 받기" @click.prevent="onSubmit" :disabled="!checkEmailValidation" :class="{'button-disabled-base' : !checkEmailValidation}"></BaseButton>
+          <BaseButton class="w-4/12" id="getOtpBtn" label="인증번호 받기" @click.prevent="onSubmit" :disabled="!checkEmailValidation" :class="{'button-disabled-base' : !checkEmailValidation}"></BaseButton>
         </div>
         <div class="w-full flex gap-3" v-if="(isOtpNumber && !isChangePassword) || isChangePassword">
           <BaseInput 
@@ -24,7 +24,7 @@
             :arrayRule="otpNumberRequiredRule"
             :backendError="otpNumberError"
             id="otpNumber" />
-          <BaseButton class="w-4/12 lg" id="checkOtpNumber" label="인증" @click.prevent="checkOtpNumber" :disabled="!checkOtpNumberValidation"  :class="{'button-disabled-base' : !checkOtpNumberValidation}"></BaseButton>
+          <BaseButton class="w-4/12" id="checkOtpNumber" label="인증" @click.prevent="checkOtpNumber" :disabled="!checkOtpNumberValidation"  :class="{'button-disabled-base' : !checkOtpNumberValidation}"></BaseButton>
         </div>
       </div>
       <div class="w-full flex flex-col gap-3" v-if="isChangePassword">
@@ -43,14 +43,14 @@
           type="password"
           v-model="form.newPasswordConfirm"
           :backendError="changePasswordError"
-          :arrayRule="passwordRule"
+          :arrayRule="confirmPasswordRule(form.newPassword)"
           id="newPasswordConfirm">
         </BaseInput>
         <BaseButton label="비밀번호 변경" @click.prevent="changePassword" :disabled="!checkPasswordRule" :class="{'button-disabled-base' : !checkPasswordRule}"></BaseButton>
       </div>
     </form>
-    <div class="w-full flex-col">
-      <BaseButton label="로그인 페이지 이동" @click.prevent="pageToLogin"></BaseButton>
+    <div class="flex justify-center">
+      <BaseLinkButton to="/auth">로그인 페이지 이동</BaseLinkButton>
     </div>
 
   </div>
@@ -64,7 +64,8 @@
     import BaseButton from '@/components/BaseButton.vue';
     import { useToast } from '@/composables/useToast';
     import {emailRequiredRule, otpNumberRequiredRule, passwordRule, confirmPasswordRule, checkRule } from '@/composables/validationRules';
-
+    import BaseLinkButton from '@/components/BaseLinkButton.vue';
+    
     const { show } = useToast();
     const router = useRouter();
     const isOtpNumber = ref(false);
@@ -87,7 +88,7 @@
       const { data } = await auth.requestOtp(formEmail);
       isOtpNumber.value = true;
       emailCheckError.value = false;
-      return doSomething(data.message, 'success')
+      doSomething(data.message, 'success')
     } catch (error){
       emailCheckError.value = false;
       return error
@@ -102,7 +103,7 @@
       const { data } = await auth.verifyOtp(checkOtp);
       isChangePassword.value = true;
       otpNumberError.value = false; 
-      return doSomething(data.message, 'success')
+      doSomething(data.message, 'success')
     } catch(error){
       isChangePassword.value = false;
       otpNumberError.value = true;
@@ -119,7 +120,7 @@
       const { data } = await auth.resetPassword(passwordForm);
       changePasswordError.value = false;
       await router.push('/auth/login')
-      return doSomething(data.message, 'success')
+      doSomething(data.message, 'success')
     } catch(error){
       changePasswordError.value = true;
       return error
@@ -153,6 +154,6 @@ const checkPasswordRule = computed(() => {
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 
 </style>

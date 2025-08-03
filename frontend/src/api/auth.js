@@ -1,6 +1,9 @@
 import axiosInstance from './index';
 
 export default {
+  register: async req => {
+    return await axiosInstance.post('/api/register', req);
+  },
   login: async req => {
     return await axiosInstance.post('/api/login', req);
   },

@@ -60,8 +60,16 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8|max:30',
             // 'password_confirmation' => 'required|same:password',
+        ],[
+            'name.required' => '이름은 필수 입력 항목입니다.',
+            'email.required' => '이메일은 필수 입력 항목입니다.',
+            'email.email' => '이메일 형식이 올바르지 않습니다.',
+            'email.unique' => '이미 사용 중인 이메일입니다.',
+            'password.required' => '비밀번호를 입력해 주세요.',
+            'password.min' => '비밀번호는 최소 8자 이상이어야 합니다.',
+            'password.max' => '비밀번호는 최대 30자까지 입력 가능합니다.',
         ]);
 
         $user = \App\Models\User::create([
@@ -70,12 +78,16 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
+
+
+
         return response()->json([
-            'message' => 'User registered successfully',
+            'message' => '회원가입이 완료되었습니다. 로그인을 해주세요.',
             'user' => $user,
         ], 201);
     }
 
+    // 비밀번호 재설정
     public function resetPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -109,6 +121,16 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json(['message' => '비밀번호가 성공적으로 재설정되었습니다.'], 200);
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return response()->json(['message' => '정상적으로 로그아웃 되었어요.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => '서버에 오류가 발생했습니다.'], 500);
+        }
     }
 
 }

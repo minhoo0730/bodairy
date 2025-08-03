@@ -35,16 +35,23 @@ export const useAuthStore = defineStore('auth', () => {
         const { data } = await api.fetchUser();
         auth.value = data;
       } catch {
-        this.logout(); // 토큰 만료 등 에러 시
+        logout(); // 토큰 만료 등 에러 시
       }
     };
 
 
-  const logout = () => {
+  const logout = async () => {
+    try{
+    const { data } = await api.logout();
+    show(data.message, 'success');
+  } catch(error){
+    throw error;
+  } finally {
     auth.value = null;
     token.value = null;
     localStorage.removeItem('access_token');
     router.push('/auth');
+  }
   };
 
   return {

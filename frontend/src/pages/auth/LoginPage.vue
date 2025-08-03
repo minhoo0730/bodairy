@@ -20,11 +20,11 @@
     </form>
     <div class="w-full flex flex-col gap-4">
       <BaseButton label="로그인" @click.prevent="onSubmit" :disabled="!checkLoginValidation" :class="{'button-disabled-base' : !checkLoginValidation}"></BaseButton>
-      <div class="flex justify-center link-pipe">
-        <BaseLinkButton to="/auth/find-email">이메일 찾기</BaseLinkButton>
-        <BaseLinkButton to="/auth/reset-password">비밀번호 재설정</BaseLinkButton>
-        <BaseLinkButton to="/auth/register">회원가입</BaseLinkButton>
-      </div>
+    </div>
+    <div class="flex justify-center link-pipe">
+      <BaseLinkButton to="/auth/find-email">이메일 찾기</BaseLinkButton>
+      <BaseLinkButton to="/auth/reset-password">비밀번호 재설정</BaseLinkButton>
+      <BaseLinkButton to="/auth/register">회원가입</BaseLinkButton>
     </div>
   </div>
 </template>

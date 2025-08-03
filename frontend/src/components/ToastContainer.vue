@@ -19,6 +19,6 @@
   // const toast = useToast();
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 
 </style>
