@@ -6,12 +6,12 @@ import { useToast } from '@/composables/useToast';
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter();
-  const auth = ref(null);
+  const user = ref(null);
   const token = ref(localStorage.getItem('access_token'));
   const isLoggingOut = ref(false);
   const {show} = useToast();
 
-  const isLogin = computed(() => !!auth.value?.email);
+  const isLogin = computed(() => !!user.value?.email);
 
   const login = async user => {
     try {
@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', () => {
       const {data} = await api.login(user);
       const getToken = data.token;
       const authUser = data.user;
-      auth.value = authUser;
+      user.value = authUser;
       token.value = getToken;
       localStorage.setItem('access_token', getToken);
       await router.push('/home');
@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
       if (!token.value) return;
       try {
         const { data } = await api.fetchUser();
-        auth.value = data;
+        user.value = data;
       } catch {
         logout(); // 토큰 만료 등 에러 시
       }
@@ -47,7 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
   } catch(error){
     throw error;
   } finally {
-    auth.value = null;
+    user.value = null;
     token.value = null;
     localStorage.removeItem('access_token');
     router.push('/auth');
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   return {
-    auth,
+    user,
     token,
     isLogin,
     login,

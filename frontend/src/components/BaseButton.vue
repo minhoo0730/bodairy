@@ -1,7 +1,8 @@
 <template>
   <button
-  :class="props.class"
-   class="button-base">{{props.label}}</button>
+    :class="props.class"
+    class="button-base">{{props.label}}
+  </button>
 </template>
 
 <script setup>

@@ -45,6 +45,11 @@ export const requiredRule = val => {
   return !!val || '필수 입력항목 입니다.';
 };
 
+export const phoneRule = [
+  v => !!v || '휴대전화번호를 입력하세요.',
+  v => /^01[0-9]{8,9}$/.test(v) || '유효한 휴대전화번호가 아닙니다,'
+]
+
 export const checkRule = (rules, value) => {
   if (!Array.isArray(rules)) {
     return { valid: true, message: '' }; // 규칙 없음 = 통과

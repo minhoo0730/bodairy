@@ -60,6 +60,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'phone' => ['required','regex:/^01[0-9]{8,9}$/'], // 010 포함 10~11자리
             'password' => 'required|string|min:8|max:30',
             // 'password_confirmation' => 'required|same:password',
         ],[
@@ -75,6 +76,7 @@ class AuthController extends Controller
         $user = \App\Models\User::create([
             'name' => $request->name,
             'email' => strtolower($request->email),
+            'phone' => $request->phone,
             'password' => bcrypt($request->password),
         ]);
 
@@ -82,7 +84,7 @@ class AuthController extends Controller
 
 
         return response()->json([
-            'message' => '회원가입이 완료되었습니다. 로그인을 해주세요.',
+            'message' => '회원가입이 완료되었습니다.\n로그인을 해주세요.',
             'user' => $user,
         ], 201);
     }
@@ -123,6 +125,7 @@ class AuthController extends Controller
         return response()->json(['message' => '비밀번호가 성공적으로 재설정되었습니다.'], 200);
     }
 
+    // 로그아웃
     public function logout(Request $request)
     {
         try {
@@ -132,5 +135,37 @@ class AuthController extends Controller
             return response()->json(['error' => '서버에 오류가 발생했습니다.'], 500);
         }
     }
+
+    // 이메일 찾기
+    public function findEmail(Request $request) {
+        $data = $request->validate([
+            'name'  => ['required','string','max:50'],
+            'phone' => ['required','regex:/^01[0-9]{8,9}$/'],
+        ]);
+
+        $user = User::where('name', $data['name'])
+                    ->where('phone', $data['phone'])
+                    ->first();
+
+        // 존재 유무 노출 줄이기: 응답 문구는 동일하게
+        if (!$user) {
+            return response()->json([
+                'message' => '입력하신 정보로 계정을 찾을 수 없습니다.'
+            ], 200);
+        }
+
+        $masked = $this->maskEmail($user->email);
+        return response()->json([
+            'message' => '입력하신 정보로 조회를 완료했습니다.',
+            'email_masked' => $masked,
+        ], 200);
+    }
+
+    private function maskEmail(string $email): string {
+        [$local, $domain] = explode('@', $email, 2);
+        $keep = max(1, min(2, strlen($local))); // 앞 1~2글자만 노출
+        return substr($local, 0, $keep) . str_repeat('*', max(3, strlen($local)-$keep)) . '@' . $domain;
+    }
+
 
 }

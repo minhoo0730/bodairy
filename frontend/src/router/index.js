@@ -73,7 +73,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.path !== '/auth') {
     await authStore.fetchUser();
   }
-  const isLoggedIn = !!authStore.auth;
+  const isLoggedIn = !!authStore.user;
   if (to.meta.requiresAuth && !isLoggedIn) {
     return next('/auth');
   }

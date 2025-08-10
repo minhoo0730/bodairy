@@ -1,29 +1,29 @@
 <template>
   <div>
-  <div class="relative">
-    <input
-      placeholder=" "
-      class="input-base peer"
-      :class="inputClass"
-      :type="props.type"
-      :maxlength="props.maxlength"
-      :id="props.id"
-      :value="props.modelValue"
-      :autocomplete="props.autocomplete ?? (props.type === 'password' ? 'current-password' : 'on')"
-      :inputmode="props.inputmode"
-      @focus="onFocus"
-      @blur="onBlur"
-      @input="onInput"
-      />
-    <label
-      :for="props.id"
-      :class="labelClass"
-      class="label-base"
-      >
-      {{ props.label }}
-    </label>
-  </div>
-  <p @blur="!validate" class="mt-2  dark:mt-2 text-red-600 dark:text-red-400" v-if="hasError">{{ errorMessage }}</p>
+    <div class="relative">
+      <input
+        :placeholder="props.placeholder"
+        class="input-base peer"
+        :class="inputClass"
+        :type="props.type"
+        :maxlength="props.maxlength"
+        :id="props.id"
+        :value="props.modelValue"
+        :autocomplete="props.autocomplete ?? (props.type === 'password' ? 'current-password' : 'on')"
+        :inputmode="props.inputmode"
+        @focus="onFocus"
+        @blur="onBlur"
+        @input="onInput"
+        />
+      <label
+        :for="props.id"
+        :class="labelClass"
+        class="label-base"
+        >
+        {{ props.label }}
+      </label>
+    </div>
+    <p @blur="!validate" class="mt-2  dark:mt-2 text-red-600 dark:text-red-400" v-if="hasError">{{ errorMessage }}</p>
 </div>
 </template>
 
@@ -66,6 +66,10 @@
     inputmode:{
       type:String,
       default:null
+    },
+    placeholder:{
+      type:String,
+      default:'',
     }
   })
 

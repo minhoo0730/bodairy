@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-screen flex flex-col justify-center items-center gap-8">
-    <form class="w-full flex flex-col justify-center items-center gap-6"  @submit.prevent @keyup.enter="onSubmits">
+    <form class="w-full flex flex-col justify-center items-center gap-6"  @submit.prevent @keyup.enter="onSubmit">
       <BaseInput
         class="w-full"
         label="이메일"
