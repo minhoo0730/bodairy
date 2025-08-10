@@ -28,5 +28,9 @@ export default {
   resetPassword:async req => {
     const response = await axiosInstance.post('/api/reset-password', req)
     return response;
+  },
+  findEmail:async req => {
+    const response = await axiosInstance.post('/api/find-email', req)
+    return response;
   }
 };
