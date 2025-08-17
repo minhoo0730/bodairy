@@ -40,14 +40,27 @@ const routes = [
   },
   {
     path: "/",
-    redirect: "/home",
+    redirect: "/home/workout-summary",
     component: DashPage,
     meta: { requiresAuth: true },
     children: [
       {
         path: "home",
         name: "home",
+        redirect: "/home/workout-summary",
         component: () => import("@/pages/home/IndexPage.vue"),
+        children:[
+        {
+          path:"workout-summary",
+          name:"workout-summary",
+          component:() => import("@/pages/home/components/DailyWorkoutSummary.vue")
+        },
+        {
+          path:"workout-chart",
+          name:"workout-chart",
+          component:() => import("@/pages/home/components/DailyWorkoutChart.vue")
+        },
+      ]
       },
     ],
     // beforeEnter: (to, form, next) => {

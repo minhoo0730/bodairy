@@ -20,7 +20,7 @@
         id="phone" />
       </form>
       <div class="w-full flex flex-col gap-3">
-        <BaseButton label="이메일 찾기" @click.prevent="onSubmit" class="w-full" :disabled="!checkNameValid" :class="{'button-disabled-base' : !checkNameValid}"></BaseButton>
+        <BaseButton label="이메일 찾기" @click.prevent="onSubmit" class="w-full" :disabled="!checkFindEmailValidation" :class="{'button-disabled-base' : !checkFindEmailValidation}"></BaseButton>
         <div class="w-full p-4 text-center bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700" v-if="findEmailResult">
           <h5 class="text-2xl font-bold text-gray-900 dark:text-gray-400">{{form.name}}님이 가입하신 이메일은<br>
           <span class="text-gray-500 dark:text-white">{{ findEmailResult }} </span> 입니다.</h5>
@@ -42,9 +42,9 @@
   import { useRouter } from 'vue-router';
   import { useToast } from '@/composables/useToast';
   import { nameRequiredRule, phoneRule, checkRule } from '@/composables/validationRules';
-  import BaseInput from '@/components/BaseInput.vue';
-  import BaseButton from '@/components/BaseButton.vue';
-  import BaseLinkButton from '@/components/BaseLinkButton.vue';
+  import BaseInput from '@/components/base/BaseInput.vue';
+  import BaseButton from '@/components/base/BaseButton.vue';
+  import BaseLinkButton from '@/components/base/BaseLinkButton.vue';
 
   const { show } = useToast();
   const doSomething = (message, type) => {
@@ -59,9 +59,20 @@
   const findEmailResult = ref('');
 
   const backendError = ref(false);
+
   const checkNameValid = computed(() => {
     const nameValid = checkRule(nameRequiredRule, form.value.name);
     return nameValid
+  })
+  const checkPhoneValid = computed(() => {
+    const phoneValid = checkRule(phoneRule, form.value.phone);
+    return phoneValid
+  })
+
+  const checkFindEmailValidation = computed(() => {
+    const nameValid = checkRule(nameRequiredRule, form.value.name);
+    const phoneValid = checkRule(phoneRule, form.value.phone);
+    return nameValid.valid && phoneValid.valid
   })
 
     const onSubmit = async () => {

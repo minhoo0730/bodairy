@@ -2,7 +2,6 @@ import axios from 'axios';
 // import Cookies from 'js-cookie';
 // import { useAuthStore } from '../stores/auth';
 import { toasts, useToast } from '@/composables/useToast';
-import { list } from 'postcss';
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,

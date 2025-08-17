@@ -1,7 +1,9 @@
 <template>
   <button
     :class="props.class"
-    class="button-base">{{props.label}}
+    class="button-base">
+    <slot></slot>
+    {{props.label}}
   </button>
 </template>
 

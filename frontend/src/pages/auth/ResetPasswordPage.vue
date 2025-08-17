@@ -60,11 +60,11 @@
     import { ref , computed} from 'vue';
     import { useRouter } from 'vue-router';
     import auth from '@/api/auth';
-    import BaseInput from '@/components/BaseInput.vue';
-    import BaseButton from '@/components/BaseButton.vue';
+    import BaseInput from '@/components/base/BaseInput.vue';
+    import BaseButton from '@/components/base/BaseButton.vue';
     import { useToast } from '@/composables/useToast';
     import {emailRequiredRule, otpNumberRequiredRule, passwordRule, confirmPasswordRule, checkRule } from '@/composables/validationRules';
-    import BaseLinkButton from '@/components/BaseLinkButton.vue';
+    import BaseLinkButton from '@/components/base/BaseLinkButton.vue';
     
     const { show } = useToast();
     const router = useRouter();

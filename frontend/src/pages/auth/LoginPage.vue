@@ -34,9 +34,9 @@
   import { useAuthStore } from '@/stores/auth';
   import { useRouter } from 'vue-router';
   import {emailRequiredRule, passwordRule, checkRule } from '@/composables/validationRules';
-  import BaseInput from '@/components/BaseInput.vue';
-  import BaseButton from '@/components/BaseButton.vue';
-  import BaseLinkButton from '@/components/BaseLinkButton.vue';
+  import BaseInput from '@/components/base/BaseInput.vue';
+  import BaseButton from '@/components/base/BaseButton.vue';
+  import BaseLinkButton from '@/components/base/BaseLinkButton.vue';
 
   const auth = useAuthStore();
   const form = ref({

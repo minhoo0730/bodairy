@@ -59,9 +59,9 @@
   import { useRouter } from 'vue-router';
   import { nameRequiredRule, emailRequiredRule, passwordRule, phoneRule, confirmPasswordRule, checkRule } from '@/composables/validationRules';
   import { useToast } from '@/composables/useToast';
-  import BaseInput from '@/components/BaseInput.vue';
-  import BaseButton from '@/components/BaseButton.vue';
-  import BaseLinkButton from '@/components/BaseLinkButton.vue';
+  import BaseInput from '@/components/base/BaseInput.vue';
+  import BaseButton from '@/components/base/BaseButton.vue';
+  import BaseLinkButton from '@/components/base/BaseLinkButton.vue';
 
   const { show } = useToast();
   const doSomething = (message, type) => {

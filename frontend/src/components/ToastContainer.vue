@@ -14,7 +14,7 @@
 
 <script setup>
   import { toasts, useToast } from '@/composables/useToast';
-  import BaseToast from '@/components/BaseToast.vue';
+  import BaseToast from '@/components/base/BaseToast.vue';
 
   // const toast = useToast();
 </script>

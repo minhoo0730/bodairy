@@ -40,13 +40,34 @@ html {
 }
 
 .button-base{
-  @apply h-20 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-md px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800;
+  @apply h-20 text-white bg-blue-700 font-medium rounded-md px-5 py-4 text-center hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800;
 
     &.button-disabled-base{
     @apply bg-blue-400 dark:bg-blue-500 cursor-not-allowed
   }
 
+  &.router-link-active{
+    @apply bg-blue-700 text-white
+  }
 }
+
+.button-group{
+  @apply flex-1 w-full px-8 py-4 text-gray-900 bg-white border border-gray-200 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white hover:bg-gray-100;
+
+  &:first-child{
+    @apply rounded-s-2xl 
+  }
+  &:last-child{
+    @apply rounded-e-2xl
+  }
+
+  &.router-link-active{
+    @apply bg-blue-700 text-white
+  }
+
+}
+
+
 .input-base {
   @apply block px-6 py-6 w-full text-gray-900 text-xl
  bg-transparent  rounded-lg border border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600          placeholder:opacity-0 focus:placeholder:opacity-100;
