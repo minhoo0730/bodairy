@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed flex flex-col justify-center items-center bottom-16 left-0 w-full">
+  <div class="fixed flex flex-col justify-center items-center bottom-32 left-0 w-full z-[999]">
     <div id="toastContainer" v-if="toasts.length" class="">
       <BaseToast
         v-for="t in toasts"

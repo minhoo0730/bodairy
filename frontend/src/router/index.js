@@ -53,25 +53,22 @@ const routes = [
         {
           path:"workout-summary",
           name:"workout-summary",
-          component:() => import("@/pages/home/components/DailyWorkoutSummary.vue")
+          component:() => import("@/pages/home/DailyWorkoutSummary.vue"),
         },
         {
           path:"workout-chart",
           name:"workout-chart",
-          component:() => import("@/pages/home/components/DailyWorkoutChart.vue")
+          component:() => import("@/pages/home/DailyWorkoutChart.vue")
         },
       ]
       },
+      {
+        path: '/workouts/new',
+        name: 'workoutCreate',
+        meta: { requiresAuth: true },
+        component: () => import('@/pages/workouts/IndexPage.vue'),
+      },
     ],
-    // beforeEnter: (to, form, next) => {
-    //   const authStore = useAuthStore();
-    //   if (to.meta.requiresAuth && !authStore.isLogin) {
-    //     authStore.checkSession();
-    //     next('/auth');
-    //   } else {
-    //     next();
-    //   }
-    // },
   },
 ];
 
@@ -81,18 +78,28 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore();
+  const auth = useAuthStore();
 
-  if (to.path !== '/auth') {
-    await authStore.fetchUser();
+  // 1) 부트는 딱 1번만(로컬 토큰 주입 → /me 시도)
+  if (!auth.booted) {
+    await auth.boot(); // 실패해도 라우팅 강제 X (silent)
   }
-  const isLoggedIn = !!authStore.user;
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    return next('/auth');
+
+  const requiresAuth = to.meta?.requiresAuth;
+  const guestOnly    = to.meta?.guestOnly;
+
+  // 2) 보호 라우트 접근: 미로그인 → /auth?redirect=...
+  if (requiresAuth && !auth.isLogin) {
+    return next({ path: '/auth', query: { redirect: to.fullPath } });
   }
-  if (to.meta.guestOnly && isLoggedIn) {
-    return next('/home');
+
+  // 3) 게스트 전용: 로그인 상태면 원래 가려던 곳 또는 /home
+  if (guestOnly && auth.isLogin) {
+    const redirect = (to.query?.redirect) || '/home';
+    return next(redirect);
   }
+
+  // 4) 그 외 통과
   return next();
 });
 export default router;

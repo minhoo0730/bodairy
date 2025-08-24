@@ -25,6 +25,8 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/request-otp', [OtpController::class, 'requestOtp']);
 Route::post('/verify-otp', [OtpController::class, 'verifyOtp']);
 
+// 로그인 리프레시 API
+Route::post('/refresh', [AuthController::class, 'refresh']);
 
 // JWT 인증된 사용자만 접근 가능
 Route::middleware(['auth:api'])->group(function () {

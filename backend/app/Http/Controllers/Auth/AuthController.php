@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Auth;
 use App\Models\User;
+use App\Models\RefreshToken;
+use App\Models\OtpCode;
+use App\Services\AuthService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Models\OtpCode;
 
 class AuthController extends Controller
 {
+    public function __construct(private AuthService $auth) {}
+
     // 로그인
     public function login(Request $request)
     {
@@ -46,10 +52,14 @@ class AuthController extends Controller
             ], 403);
         }
 
+        // ✅ 여기서 refresh_token 발급
+        $refreshToken = $this->generateRefreshToken($user);
+
         // 5. 로그인 성공
         return response()->json([
-            'message' => 'Login successful',
-            'token' => $token,
+            'message' => '로그인에 성공하였습니다',
+            'access_token' => $token,
+            'refresh_token' => $refreshToken,
             'user' => Auth::user(),
         ]);
     }
@@ -129,10 +139,31 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         try {
-            JWTAuth::invalidate(JWTAuth::getToken());
-            return response()->json(['message' => '정상적으로 로그아웃 되었어요.']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => '서버에 오류가 발생했습니다.'], 500);
+            // 1) 가능하면 Access 토큰 무효화
+            try {
+                if ($token = JWTAuth::getToken()) {
+                    JWTAuth::invalidate($token); // 현재 access 즉시 무효화
+                }
+            } catch (\Throwable $e) {
+                // access 만료/없음 → 무시
+            }
+
+            $rawRt = $request->input('refresh_token');
+
+            if ($rawRt) {
+                // 2-a) 전달된 refresh 토큰만 revoke
+                RefreshToken::where('token', hash('sha256', (string)$rawRt))
+                    ->update(['revoked_at' => now()]);
+            } else if ($request->user()) {
+                // 2-b) 사용자 전체 refresh 토큰 revoke (권장)
+                RefreshToken::where('user_id', $request->user()->id)
+                    ->update(['revoked_at' => now()]);
+            }
+
+            return response()->json(['message' => 'Logged out'], 200);
+        } catch (\Throwable $e) {
+            \Log::error('logout failed', ['err' => $e->getMessage()]);
+            return response()->json(['message' => 'Logout internal error'], 500);
         }
     }
 
@@ -161,11 +192,68 @@ class AuthController extends Controller
         ], 200);
     }
 
+    // 토큰 리프레쉬 컨트롤러
+public function refresh(Request $request)
+    {
+try {
+            $raw = (string) $request->input('refresh_token');
+            if (!$raw) {
+                return response()->json(['message' => 'Refresh token is required'], 400);
+            }
+
+            $stored = RefreshToken::where('token', hash('sha256', $raw))->valid()->first();
+            if (!$stored) {
+                return response()->json(['message' => 'Invalid or expired refresh token'], 401);
+            }
+
+            $user = $stored->user;
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 401);
+            }
+
+            // 1) access 재발급
+            $accessToken = JWTAuth::fromUser($user);
+
+            // 2) 이전 refresh 토큰 revoke
+            $stored->revoked_at = now();
+            $stored->save();
+
+            // 3) 새 refresh 토큰 발급(원문 반환, 해시 저장)
+            $newRaw = bin2hex(random_bytes(32));   // 64자 hex
+            $newHashed = hash('sha256', $newRaw);
+            RefreshToken::create([
+                'user_id'    => $user->id,
+                'token'      => $newHashed,
+                'expires_at' => now()->addDays(14),
+            ]);
+
+            return response()->json([
+                'access_token'  => $accessToken,
+                'refresh_token' => $newRaw,
+            ], 200);
+        } catch (\Throwable $e) {
+            Log::error('refresh failed', ['err' => $e->getMessage()]);
+            return response()->json(['message' => 'Refresh internal error'], 500);
+        }
+    }
+
+
     private function maskEmail(string $email): string {
         [$local, $domain] = explode('@', $email, 2);
         $keep = max(1, min(2, strlen($local))); // 앞 1~2글자만 노출
         return substr($local, 0, $keep) . str_repeat('*', max(3, strlen($local)-$keep)) . '@' . $domain;
     }
 
+    // 리프레시 토큰 발급 함수
+    private function generateRefreshToken($user)
+    {
+        $token = Str::random(60);
+        RefreshToken::create([
+            'user_id' => $user->id,
+            'token' => hash('sha256', $token),
+            'expires_at' => now()->addDays(7),
+        ]);
 
+        return $token;
+    }
 }

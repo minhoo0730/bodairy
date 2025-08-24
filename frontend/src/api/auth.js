@@ -7,12 +7,16 @@ export default {
   login: async req => {
     return await axiosInstance.post('/api/login', req);
   },
-  logout: async () => {
-    return await axiosInstance.post('/api/logout');
+  logout: async refreshToken => {
+    return await axiosInstance.post('/api/logout', { refresh_token: refreshToken });
   },
 
   fetchUser:async () => {
     return await axiosInstance.get('/api/me')
+  },
+
+  refresh:async refreshToken => {
+    return await axiosInstance.post('/api/refresh', { refresh_token: refreshToken })
   },
 
   requestOtp:async req => {

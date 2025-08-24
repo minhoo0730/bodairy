@@ -37,7 +37,7 @@
   import BaseInput from '@/components/base/BaseInput.vue';
   import BaseButton from '@/components/base/BaseButton.vue';
   import BaseLinkButton from '@/components/base/BaseLinkButton.vue';
-
+  const router = useRouter();
   const auth = useAuthStore();
   const form = ref({
     email:'',
@@ -48,7 +48,8 @@
 
   const onSubmit = async () => {
     try{
-      return await auth.login(form.value)
+      const response = await auth.login(form.value);
+      if(response) router.push('/home') 
     } catch(error){
       backendError.value = true;
       return error;
