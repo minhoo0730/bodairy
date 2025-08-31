@@ -11,7 +11,7 @@
       </div>
       <div class="w-full flex flex-col justify-start">
         <div class="mt-8">
-          <BaseLinkButton class="!rounded-2xl !px-4 w-full flex justify-center items-center" to="/workouts/new">
+          <BaseLinkButton class="border-gray-400 border py-4 !rounded-2xl !px-4 w-full flex justify-center items-center" to="/workouts/new">
             오늘의 운동을 입력하세요!
           </BaseLinkButton>
         </div>
