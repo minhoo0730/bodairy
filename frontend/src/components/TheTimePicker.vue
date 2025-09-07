@@ -1,9 +1,11 @@
 <template>
-  <div class="flex gap-4 justify-center items-center">
-    <BaseSelectBox :items="timeType" :selected=nowTimeType @selectList="setList"></BaseSelectBox>
+  <div class="flex gap-4 justify-center items-center w-full">
+    <!-- <BaseSelectBox :items="timeType" :selected=nowTimeType @selectList="setList"></BaseSelectBox>
     <HourSelect :nowHour="nowHour" @selectHour="setHour"></HourSelect>
     <p>:</p>
-    <MinuteSelect :nowMinute="nowMinute" @selectMinute="setMinute"></MinuteSelect>
+    <MinuteSelect :nowMinute="nowMinute" @selectMinute="setMinute"></MinuteSelect> -->
+
+      <NewTimePicker></NewTimePicker>
   </div>
 </template>
 
@@ -16,9 +18,9 @@
 
   import dayjs from 'dayjs'
   import 'dayjs/locale/ko';
+  import NewTimePicker from './NewTimePicker.vue';
+
   dayjs.locale('ko');
-
-
   const timeType = ['오전', '오후']
   const now = ref(dayjs());
   const nowTimeType = ref(now.value.format('A'))
